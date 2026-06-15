@@ -209,13 +209,19 @@
     dur = dur||1100;
     const start=performance.now();
     const from = 0;
+    clearTimeout(el._cntT);
+    let done=false;
     function tick(now){
-      let p=Math.min(1,(now-start)/dur);
-      p = 1-Math.pow(1-p,3); // easeOutCubic
+      if(done) return;
+      let t=Math.min(1,(now-start)/dur);
+      const p = 1-Math.pow(1-t,3); // easeOutCubic
       el.textContent = fmt(from+(target-from)*p);
-      if(p<1) requestAnimationFrame(tick);
+      if(t<1) requestAnimationFrame(tick);
+      else done=true;
     }
     requestAnimationFrame(tick);
+    // safety net: force the final value even if rAF is throttled/paused
+    el._cntT = setTimeout(()=>{ if(!done){ done=true; el.textContent=fmt(target); } }, dur+260);
   }
 
   function runCounters(scope){
@@ -274,9 +280,16 @@
     const stage=document.querySelector('deck-stage');
     if(stage){
       stage.addEventListener('slidechange',e=>{ if(e.detail.slide) activate(e.detail.slide); });
-      // activate first
-      const first=stage.querySelector('section');
-      if(first) requestAnimationFrame(()=>activate(first));
+      // activate whichever slide is actually showing on load (deck may restore an inner slide from the URL)
+      const sections=[...stage.querySelectorAll('section')];
+      const showCurrent=()=>{
+        let cur=sections.find(s=>s.hasAttribute('data-deck-active'))
+             || sections.find(s=>s.offsetParent!==null)
+             || sections[0];
+        if(cur) activate(cur);
+      };
+      requestAnimationFrame(()=>requestAnimationFrame(showCurrent));
+      setTimeout(showCurrent, 350);
     }
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
