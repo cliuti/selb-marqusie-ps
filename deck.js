@@ -241,9 +241,18 @@
   }
 
   function runBars(scope){
-    scope.querySelectorAll('.bar-fill[data-w]').forEach(el=>{
-      el.style.width='0';
-      requestAnimationFrame(()=>{ requestAnimationFrame(()=>{ el.style.width=el.dataset.w+'%'; }); });
+    const bars = scope.querySelectorAll('.bar-fill[data-w]');
+    bars.forEach((el,i)=>{
+      const target = el.dataset.w + '%';
+      const delay = (i % 8) * 70; // stagger within each column
+      el.style.transition = 'none';
+      el.style.width = target; // final state (robust for print / no-anim)
+      if(el.animate){
+        el.animate(
+          [{ width:'0%' }, { width:target }],
+          { duration:1100, delay:delay, easing:'cubic-bezier(.16,.84,.36,1)', fill:'backwards' }
+        );
+      }
     });
   }
 
