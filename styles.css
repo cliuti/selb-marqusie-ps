@@ -280,7 +280,7 @@ section{
 .esg-strip{ display:flex; align-items:center; gap:22px; margin-top:34px;
   background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
   border:1px solid var(--line-dark); border-radius:16px; padding:22px 30px; }
-.esg-step{ flex:1; }
+.esg-step{ flex:1; text-align:center; }
 .esg-step.hi{ flex:1.1; }
 .esg-l{ font-family:'Space Mono'; font-size:13px; color:var(--on-dark-soft); letter-spacing:.06em; }
 .esg-v{ font-family:'Archivo'; font-weight:900; font-size:32px; letter-spacing:-.02em; margin-top:4px; font-variant-numeric:tabular-nums; }
