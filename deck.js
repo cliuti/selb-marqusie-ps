@@ -199,6 +199,20 @@
     document.querySelectorAll('#mes-tabs .mtab').forEach(b=>{
       b.classList.toggle('on', b.dataset.mes===mes);
     });
+    animateMinibars(host);
+  }
+
+  function animateMinibars(scope){
+    if(!scope) return;
+    scope.querySelectorAll('.minibar i').forEach((el,i)=>{
+      const target = el.style.width || '0%';
+      if(el.animate){
+        el.animate(
+          [{ width:'0%' }, { width:target }],
+          { duration:950, delay:(i%10)*55, easing:'cubic-bezier(.16,.84,.36,1)', fill:'backwards' }
+        );
+      }
+    });
   }
 
   function setText(id,t){ const e=document.getElementById(id); if(e) e.textContent=t; }
@@ -268,6 +282,8 @@
     slide._animT = setTimeout(()=>slide.classList.remove('anim'), 1700);
     runCounters(slide);
     runBars(slide);
+    const mz = slide.querySelector('#tbl-matriz');
+    if(mz) animateMinibars(mz);
   }
 
   /* ---------- init ---------- */
